@@ -26,18 +26,18 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   // Set redirectTo after component mounts (safe for client)
-  useEffect(() => {
-    const search = searchParams.get("redirectTo");
-    const stored = sessionStorage.getItem("redirectTo");
+//   const [redirectTo, setRedirectTo] = useState("/Pages/News");
 
-    const target = search || stored || "/Pages/News";
-    setRedirectTo(target);
+useEffect(() => {
+  const search = searchParams.get("redirectTo");
+  const stored = sessionStorage.getItem("redirectTo");
+  const target = search || stored || "/Pages/News";
+  setRedirectTo(target);
+  if (search || stored) {
+    sessionStorage.setItem("redirectTo", target);
+  }
+}, [searchParams]);
 
-    // Save in sessionStorage to persist through refresh
-    if (search || stored) {
-      sessionStorage.setItem("redirectTo", target);
-    }
-  }, [searchParams]);
 
   const finishLogin = () => {
     const target = sessionStorage.getItem("redirectTo") || "/Pages/News";
