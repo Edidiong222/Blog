@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaGoogle } from "react-icons/fa";
@@ -8,18 +9,15 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-  updateProfile
+  updateProfile,
 } from "firebase/auth";
 
 export default function AuthPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // If a page sent the user here, it will pass redirectTo=? in URL
-  const redirectTo =
-    searchParams.get("redirectTo") ||
-    sessionStorage.getItem("redirectTo") ||
-    "/Pages/News";
+  // State to safely hold redirect path
+  const [redirectTo, setRedirectTo] = useState("/Pages/News");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,17 +25,24 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  // Save redirectTo in case page refresh happens
+  // Set redirectTo after component mounts (safe for client)
   useEffect(() => {
-    if (redirectTo) {
-      sessionStorage.setItem("redirectTo", redirectTo);
+    const search = searchParams.get("redirectTo");
+    const stored = sessionStorage.getItem("redirectTo");
+
+    const target = search || stored || "/Pages/News";
+    setRedirectTo(target);
+
+    // Save in sessionStorage to persist through refresh
+    if (search || stored) {
+      sessionStorage.setItem("redirectTo", target);
     }
-  }, [redirectTo]);
+  }, [searchParams]);
 
   const finishLogin = () => {
     const target = sessionStorage.getItem("redirectTo") || "/Pages/News";
-    sessionStorage.removeItem("redirectTo"); // Clear it afterwards
-    router.push(target); // Go back to previous page
+    sessionStorage.removeItem("redirectTo");
+    router.push(target);
   };
 
   const handleSubmit = async (e) => {
