@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import {FaComment} from "react-icons/fa"
 import { useParams, useRouter } from "next/navigation";
 import { db, auth } from "../../firebase";
 import {
@@ -147,33 +148,33 @@ export default function BlogPage() {
     const formatTimestamp = (ts) => ts?.seconds ? new Date(ts.seconds * 1000).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) : "";
 
     return (
-       <div className="p-6 min-h-screen bg-black text-white">
-    <h1 className="text-3xl font-bold text-yellow-300 mb-4">{blog.title}</h1>
+        <div className="p-6 min-h-screen bg-black text-white">
+            <h1 className="text-3xl font-bold text-yellow-300 mb-4">{blog.title}</h1>
 
-    {/* AUTHOR INFO */}
-    <div className="flex items-center gap-3 mb-4">
-        {/* <img
+            {/* AUTHOR INFO */}
+            <div className="flex items-center gap-3 mb-4">
+                {/* <img
             src={blog.photoURL || "/default-avatar.png"}
             alt={blog.displayName}
             className="w-10 h-10 rounded-full object-cover"
         /> */}
-        <h2><FaUserCircle size={40}/></h2>
-        <div>
-            <p className="font-semibold text-yellow-300">{blog.username}</p>
-            <p className="text-gray-400 text-sm">{formatTimestamp(blog.createdAt)}</p>
-        </div>
-    </div>
+                <h2><FaUserCircle size={40} /></h2>
+                <div>
+                    <p className="font-semibold text-yellow-300">{blog.username}</p>
+                    <p className="text-gray-400 text-sm">{formatTimestamp(blog.createdAt)}</p>
+                </div>
+            </div>
 
-    <p className="text-gray-300 mb-4 whitespace-pre-wrap">{blog.content}</p>
- 
             <p className="text-gray-300 mb-4 whitespace-pre-wrap">{blog.content}</p>
 
-            <div className="flex items-center gap-2 mb-4">
+            <p className="text-gray-300 mb-4 whitespace-pre-wrap">{blog.content}</p>
+
+            <div className="flex items-center  gap-2 mb-4">
                 <button
                     onClick={toggleLike}
                     className={`text-xl transition-colors ${liked ? "text-pink-500" : "text-gray-400 hover:text-pink-500"}`}
                 >
-                    {liked ? <FaHeart /> : <FaRegHeart />}
+                    {liked ? <FaHeart size={20} /> : <FaRegHeart size={20}/>}
                 </button>
                 <span>{blog.likesArray?.length || 0} Likes</span>
 
@@ -193,14 +194,22 @@ export default function BlogPage() {
                         )}
                     </div>
                 )}
+
+                 <button
+                onClick={() => setShowComments(prev => !prev)}
+                className="text-sm text-yellow-300  hover:underline"
+            >
+{showComments ? (
+    "Hide Comments"
+) : (
+    <span className="flex items-center gap-1">
+        <FaComment size={20}/> ({Object.keys(commentsMap).length})
+    </span>
+)}
+            </button>
             </div>
 
-            <button
-                onClick={() => setShowComments(prev => !prev)}
-                className="text-sm text-yellow-300 mb-4 hover:underline"
-            >
-                {showComments ? "Hide Comments" : `View Comments (${Object.keys(commentsMap).length})`}
-            </button>
+           
 
             {showComments && (
                 <div className="flex flex-col gap-4">
@@ -223,7 +232,7 @@ export default function BlogPage() {
                             <div key={cmt.id} className="flex flex-col gap-2 bg-gray-800 p-3 rounded-xl shadow-md">
                                 <div className="flex gap-3 items-start">
                                     {/* <img src={cmt.photoURL || "/default-avatar.png"} alt={cmt.displayName} className="w-10 h-10 rounded-full object-cover" /> */}
-                                            <h2><FaUserCircle size={20}/></h2>
+                                    <h2><FaUserCircle size={20} /></h2>
 
                                     <div className="flex-1">
                                         <div className="flex items-center justify-between">
@@ -233,8 +242,8 @@ export default function BlogPage() {
                                                 <div className="relative">
                                                     <button onClick={() => setShowOptions(prev => ({ ...prev, [`comment-${cmt.id}`]: !prev[`comment-${cmt.id}`] }))} className="ml-2 text-white"><FiMoreVertical /></button>
                                                     {showOptions[`comment-${cmt.id}`] && (
-                                                        <button onClick={() => deleteComment(cmt.id)}       className="absolute right-0 top-6 z-50 bg-white p-2 rounded-lg text-red-500 hover:text-red-700"
-><FaTrash /></button>
+                                                        <button onClick={() => deleteComment(cmt.id)} className="absolute right-0 top-6 z-50 bg-white p-2 rounded-lg text-red-500 hover:text-red-700"
+                                                        ><FaTrash /></button>
                                                     )}
                                                 </div>
                                             )}

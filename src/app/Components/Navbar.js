@@ -14,7 +14,7 @@ export function Navbar() {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "News", href: "/Pages/News" },
-    { label: "Podcasts", href: "/Pages/BlogPost" },
+    { label: "Post", href: "/Pages/BlogPost" },
     { label: "Blogs", href: "/Pages/BlogFeed" },
   ];
 
