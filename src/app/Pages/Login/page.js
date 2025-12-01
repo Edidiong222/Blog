@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FaGoogle } from "react-icons/fa";
 import { auth } from "../firebase";
 import {
@@ -9,14 +9,13 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-  updateProfile,
+  updateProfile
 } from "firebase/auth";
 
 export default function AuthPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  // State to safely hold redirect path
+  // Default redirect page since we removed searchParams
   const [redirectTo, setRedirectTo] = useState("/Pages/News");
 
   const [email, setEmail] = useState("");
@@ -25,29 +24,14 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  // Set redirectTo after component mounts (safe for client)
-//   const [redirectTo, setRedirectTo] = useState("/Pages/News");
-
-useEffect(() => {
-  const search = searchParams.get("redirectTo");
-  const stored = sessionStorage.getItem("redirectTo");
-  const target = search || stored || "/Pages/News";
-  setRedirectTo(target);
-  if (search || stored) {
-    sessionStorage.setItem("redirectTo", target);
-  }
-}, [searchParams]);
-
-
   const finishLogin = () => {
-    const target = sessionStorage.getItem("redirectTo") || "/Pages/News";
-    sessionStorage.removeItem("redirectTo");
-    router.push(target);
+    router.push(redirectTo);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
@@ -58,7 +42,11 @@ useEffect(() => {
           email,
           password
         );
-        await updateProfile(userCredential.user, { displayName: username });
+
+        await updateProfile(userCredential.user, {
+          displayName: username,
+        });
+
         finishLogin();
       }
     } catch (err) {

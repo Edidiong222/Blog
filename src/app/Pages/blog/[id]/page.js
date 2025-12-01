@@ -147,8 +147,25 @@ export default function BlogPage() {
     const formatTimestamp = (ts) => ts?.seconds ? new Date(ts.seconds * 1000).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) : "";
 
     return (
-        <div className="p-6 min-h-screen bg-black text-white">
-            <h1 className="text-3xl font-bold text-yellow-300 mb-4">{blog.title}</h1>
+       <div className="p-6 min-h-screen bg-black text-white">
+    <h1 className="text-3xl font-bold text-yellow-300 mb-4">{blog.title}</h1>
+
+    {/* AUTHOR INFO */}
+    <div className="flex items-center gap-3 mb-4">
+        {/* <img
+            src={blog.photoURL || "/default-avatar.png"}
+            alt={blog.displayName}
+            className="w-10 h-10 rounded-full object-cover"
+        /> */}
+        <h2><FaUserCircle size={40}/></h2>
+        <div>
+            <p className="font-semibold text-yellow-300">{blog.username}</p>
+            <p className="text-gray-400 text-sm">{formatTimestamp(blog.createdAt)}</p>
+        </div>
+    </div>
+
+    <p className="text-gray-300 mb-4 whitespace-pre-wrap">{blog.content}</p>
+ 
             <p className="text-gray-300 mb-4 whitespace-pre-wrap">{blog.content}</p>
 
             <div className="flex items-center gap-2 mb-4">
@@ -205,7 +222,9 @@ export default function BlogPage() {
                         return (
                             <div key={cmt.id} className="flex flex-col gap-2 bg-gray-800 p-3 rounded-xl shadow-md">
                                 <div className="flex gap-3 items-start">
-                                    <img src={cmt.photoURL || "/default-avatar.png"} alt={cmt.displayName} className="w-10 h-10 rounded-full object-cover" />
+                                    {/* <img src={cmt.photoURL || "/default-avatar.png"} alt={cmt.displayName} className="w-10 h-10 rounded-full object-cover" /> */}
+                                            <h2><FaUserCircle size={20}/></h2>
+
                                     <div className="flex-1">
                                         <div className="flex items-center justify-between">
                                             <span className="font-semibold">{cmt.displayName}</span>
